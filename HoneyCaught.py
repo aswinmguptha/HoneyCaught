@@ -5,7 +5,7 @@ import os
 import sys
 import time
 
-def start():
+def banner():
     print '''
   _   _                         ____                  _     _   
  | | | | ___  _ __   ___ _   _ / ___|__ _ _   _  __ _| |__ | |_ 
@@ -41,16 +41,27 @@ def nmap_scan(url):
     scan = nm.scan(hosts=url, arguments='-p 5000')
     ip = scan['scan'].keys()[0]
     if scan['scan'][ip]['tcp'][5000]['state'] == 'open':
+        end = time.time()
+        difference = end - start
+        print '\n'
+        print '[*] Scanning finished'
+        print 'Time taken for scanning: %s seconds'.format(str(round(difference, 3)))
         print '\n'
         print 'The system is possibily running on a HoneyPot besswarm system'
     else:
+        end = time.time()
+        difference = end - start
+        print '\n\n'
+        print '[*] Scanning finished'
+        print 'Time taken for scanning: {} seconds'.format(str(round(difference, 3)))
         print '\n'
         print 'No Honeypot systems detected'
 
 def main():
-    start()
+    banner()
     url = raw_input('Enter the url that you wish to scan: ')
     is_up(url)
 
 if __name__ == '__main__':
+    start = time.time()
     main()
