@@ -1,9 +1,9 @@
 #!/usr/bin/python
 
-import nmap
 import os
 import sys
 import time
+import argparse
 
 def banner():
     print '''
@@ -28,40 +28,26 @@ def is_up(url):
         time.sleep(2)
         sys.exit()
     else:
-        print '\n'
         print '[+] Host is up'
-        nmap_scan(url)
-
-def nmap_scan(url):
-    nm = nmap.PortScanner()
-    print '\n'
-    print '[+] Scanning ' + str(url) + ' for HoneyPot'
-    time.sleep(1)
-    print '[+] Scanning port 5000 for scanning beeswarm'
-    scan = nm.scan(hosts=url, arguments='-p 5000')
-    ip = scan['scan'].keys()[0]
-    if scan['scan'][ip]['tcp'][5000]['state'] == 'open':
-        end = time.time()
-        difference = end - start
         print '\n'
-        print '[*] Scanning finished'
-        print 'Time taken for scanning: %s seconds'.format(str(round(difference, 3)))
-        print '\n'
-        print 'The system is possibily running on a HoneyPot besswarm system'
-    else:
-        end = time.time()
-        difference = end - start
-        print '\n\n'
-        print '[*] Scanning finished'
-        print 'Time taken for scanning: {} seconds'.format(str(round(difference, 3)))
-        print '\n'
-        print 'No Honeypot systems detected'
+        print 'Which module do you wish to scan?'
+        print '\t[1] beeswarm'
+        module = raw_input()
 
 def main():
-    banner()
-    url = raw_input('Enter the url that you wish to scan: ')
-    is_up(url)
+    is_up(args.host)
 
 if __name__ == '__main__':
+    banner()
     start = time.time()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-u', '--host', help='url/host to scan.')
+    parser.add_argument('-p', '--port', help='Port where HoneyPot service is running. If no port is given, default port [80] will be used.', type=int, default=80)
+    parser.add_argument('-m', '--module', help='Module to run against the target (use the module\'s serial number). To see the  available modules, use \'-l\' option.')
+    parser.add_argument('-l', '--list-modules', help='List available modules.')
+    args = parser.parse_args()
+    
+    if len(sys.argv) == 1:
+        parser.print_help()
+        sys.exit(0)
     main()
