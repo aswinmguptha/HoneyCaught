@@ -30,9 +30,16 @@ def is_up(url):
     else:
         print '[+] Host is up'
         print '\n'
-        print 'Which module do you wish to scan?'
-        print '\t[1] beeswarm'
-        module = raw_input()
+        if args.module == None:
+            print 'Which module do you wish to scan?'
+            print '\t[1] beeswarm'
+            module = raw_input()
+        else:
+            module = args.module
+        if module == '1':
+            os.system('python modules/beeswarm.py {}'.format(args.host))
+        else:
+            print 'No such modules found'
 
 def main():
     is_up(args.host)
